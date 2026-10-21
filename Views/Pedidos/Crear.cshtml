@@ -4,64 +4,108 @@
     var productos = (List<TiernoAmor.Models.Producto>)ViewBag.Productos;
 }
 
-<h2>Haz tu pedido </h2>
-<form asp-action="Crear" method="post" class="row g-3">
-    <div class="col-md-6">
-        <label asp-for="NombreCliente" class="form-label"></label>
-        <input asp-for="NombreCliente" class="form-control" />
-        <span asp-validation-for="NombreCliente" class="text-danger"></span>
+<div class="encabezado-pagina">
+    <div class="container">
+        <h1>Haz tu pedido</h1>
+        <p class="mb-0">Llena tus datos y mira el total al instante.</p>
     </div>
-    <div class="col-md-6">
-        <label asp-for="Correo" class="form-label"></label>
-        <input asp-for="Correo" class="form-control" />
-        <span asp-validation-for="Correo" class="text-danger"></span>
-    </div>
-    <div class="col-md-6">
-        <label asp-for="ProductoId" class="form-label"></label>
-        <select asp-for="ProductoId" class="form-select" id="producto">
-            <option value="">-- Selecciona --</option>
-            @foreach (var p in productos)
-            {
-                <option value="@p.Id" data-precio="@p.PrecioBase.ToString(System.Globalization.CultureInfo.InvariantCulture)">
-                    @p.Nombre (@p.PrecioBase.ToString("C0"))
-                </option>
-            }
-        </select>
-        <span asp-validation-for="ProductoId" class="text-danger"></span>
-    </div>
-    <div class="col-md-3">
-        <label asp-for="Tamano" class="form-label"></label>
-        <select asp-for="Tamano" class="form-select" id="tamano">
-            <option>Pequeño</option>
-            <option>Mediano</option>
-            <option>Grande</option>
-        </select>
-    </div>
-    <div class="col-md-3">
-        <label asp-for="Cantidad" class="form-label"></label>
-        <input asp-for="Cantidad" class="form-control" id="cantidad" />
-        <span asp-validation-for="Cantidad" class="text-danger"></span>
-    </div>
-    <div class="col-12">
-        <div class="form-check">
-            <input asp-for="ParaLlevar" class="form-check-input" />
-            <label asp-for="ParaLlevar" class="form-check-label"></label>
-        </div>
-    </div>
-    <div class="col-12">
-        <label asp-for="Notas" class="form-label"></label>
-        <textarea asp-for="Notas" class="form-control" rows="2"></textarea>
-    </div>
+</div>
 
-    <div class="col-12">
-        <div class="alert alert-light border">
-            Total estimado: <strong id="totalVivo">$0</strong>
-            <small class="text-muted">(10 % de descuento desde 5 unidades)</small>
+<div class="container seccion pt-4">
+    <form asp-action="Crear" method="post">
+        <div class="row g-4">
+
+            <!-- Formulario -->
+            <div class="col-lg-8">
+                <div class="info-card p-4">
+                    <h2 class="h5 mb-3"><i class="bi bi-person-heart me-2 text-rosa"></i>Tus datos</h2>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="NombreCliente" class="form-label"></label>
+                            <input asp-for="NombreCliente" class="form-control" placeholder="Ej: Ana Gómez" />
+                            <span asp-validation-for="NombreCliente" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for="Correo" class="form-label"></label>
+                            <input asp-for="Correo" class="form-control" placeholder="tucorreo@ejemplo.com" />
+                            <span asp-validation-for="Correo" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <h2 class="h5 mb-3"><i class="bi bi-cup-hot me-2 text-rosa"></i>Tu pedido</h2>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label asp-for="ProductoId" class="form-label"></label>
+                            <select asp-for="ProductoId" class="form-select" id="producto">
+                                <option value="">-- Selecciona --</option>
+                                @foreach (var p in productos)
+                                {
+                                    <option value="@p.Id"
+                                            data-nombre="@p.Nombre"
+                                            data-precio="@p.PrecioBase.ToString(System.Globalization.CultureInfo.InvariantCulture)">
+                                        @p.Nombre - @Formato.Moneda(p.PrecioBase)
+                                    </option>
+                                }
+                            </select>
+                            <span asp-validation-for="ProductoId" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-3">
+                            <label asp-for="Tamano" class="form-label"></label>
+                            <select asp-for="Tamano" class="form-select" id="tamano">
+                                <option>Pequeño</option>
+                                <option>Mediano</option>
+                                <option>Grande</option>
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label asp-for="Cantidad" class="form-label"></label>
+                            <input asp-for="Cantidad" class="form-control" id="cantidad" min="1" max="20" />
+                            <span asp-validation-for="Cantidad" class="text-danger"></span>
+                        </div>
+                        <div class="col-12">
+                            <div class="form-check form-switch">
+                                <input asp-for="ParaLlevar" class="form-check-input" role="switch" />
+                                <label asp-for="ParaLlevar" class="form-check-label"></label>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <label asp-for="Notas" class="form-label"></label>
+                            <textarea asp-for="Notas" class="form-control" rows="2" placeholder="Ej: sin azúcar, con leche deslactosada..."></textarea>
+                            <span asp-validation-for="Notas" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resumen en vivo -->
+            <div class="col-lg-4">
+                <div class="pedido-card p-4">
+                    <h2 class="h5 mb-3">Resumen</h2>
+                    <ul class="list-unstyled resumen-lista">
+                        <li><span>Producto</span><strong id="resProducto">-</strong></li>
+                        <li><span>Tamaño</span><strong id="resTamano">Mediano</strong></li>
+                        <li><span>Cantidad</span><strong id="resCantidad">1</strong></li>
+                        <li><span>Subtotal</span><strong id="resSubtotal">$0</strong></li>
+                        <li><span>Descuento</span><strong id="resDescuento" class="text-success">$0</strong></li>
+                    </ul>
+                    <div class="d-flex justify-content-between align-items-center total-row">
+                        <span>Total</span>
+                        <span id="totalVivo">$0</span>
+                    </div>
+                    <p class="small text-muted mt-2 mb-3">
+                        Mediano +25 % · Grande +50 % · 10 % de descuento desde 5 unidades.
+                    </p>
+                    <button type="submit" class="btn btn-tierno w-100 mb-2">
+                        <i class="bi bi-send me-1"></i> Enviar pedido
+                    </button>
+                    <a asp-action="Index" class="btn btn-vaciar w-100">Cancelar</a>
+                </div>
+            </div>
         </div>
-        <button class="btn btn-tierno">Enviar pedido</button>
-        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
-    </div>
-</form>
+    </form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

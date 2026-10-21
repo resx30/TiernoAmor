@@ -1,42 +1,73 @@
 @model List<TiernoAmor.Models.Pedido>
 @{ ViewData["Title"] = "Pedidos"; }
 
-<h2>Pedidos recibidos</h2>
-
-@if (TempData["Mensaje"] != null)
-{
-    <div class="alert alert-success">@TempData["Mensaje"]</div>
-}
-
-<a asp-action="Crear" class="btn btn-tierno mb-3">Nuevo pedido</a>
-
-@if (!Model.Any())
-{
-    <p class="text-muted">Aún no hay pedidos.</p>
-}
-else
-{
-    <div class="table-responsive">
-    <table class="table table-striped align-middle">
-        <thead>
-            <tr><th>#</th><th>Cliente</th><th>Producto</th><th>Tamaño</th><th>Cant.</th><th>Llevar</th><th>Descuento</th><th>Total</th><th>Fecha</th></tr>
-        </thead>
-        <tbody>
-        @foreach (var p in Model)
-        {
-            <tr>
-                <td>@p.Id</td>
-                <td>@p.NombreCliente</td>
-                <td>@p.ProductoNombre</td>
-                <td>@p.Tamano</td>
-                <td>@p.Cantidad</td>
-                <td>@(p.ParaLlevar ? "Sí" : "No")</td>
-                <td>@p.Descuento.ToString("C0")</td>
-                <td><strong>@p.Total.ToString("C0")</strong></td>
-                <td>@p.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
-            </tr>
-        }
-        </tbody>
-    </table>
+<div class="encabezado-pagina">
+    <div class="container d-flex flex-wrap justify-content-between align-items-center gap-2">
+        <div>
+            <h1>Pedidos recibidos</h1>
+            <p class="mb-0">Todos los pedidos registrados en Tierno Amor.</p>
+        </div>
+        <a asp-action="Crear" class="btn btn-rosa"><i class="bi bi-plus-lg me-1"></i> Nuevo pedido</a>
     </div>
-}
+</div>
+
+<div class="container seccion pt-4">
+
+    @if (TempData["Mensaje"] != null)
+    {
+        <div class="alert alert-success d-flex align-items-center" role="alert">
+            <i class="bi bi-check-circle-fill me-2"></i>
+            <div>@TempData["Mensaje"]</div>
+        </div>
+    }
+
+    @if (!Model.Any())
+    {
+        <div class="vacio text-center">
+            <i class="bi bi-cup-hot"></i>
+            <h3 class="h5 mt-3">Aún no hay pedidos</h3>
+            <p class="text-muted">Haz el primero y aparecerá aquí.</p>
+            <a asp-action="Crear" class="btn btn-tierno">Hacer un pedido</a>
+        </div>
+    }
+    else
+    {
+        <div class="row g-3 mb-4">
+            <div class="col-md-4"><div class="dato-card"><i class="bi bi-receipt"></i><strong>@Model.Count</strong><span>pedidos</span></div></div>
+            <div class="col-md-4"><div class="dato-card"><i class="bi bi-cup-straw"></i><strong>@Model.Sum(p => p.Cantidad)</strong><span>unidades vendidas</span></div></div>
+            <div class="col-md-4"><div class="dato-card"><i class="bi bi-cash-coin"></i><strong>@Formato.Moneda(Model.Sum(p => p.Total))</strong><span>total vendido</span></div></div>
+        </div>
+
+        <div class="info-card p-0 overflow-hidden">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0 tabla-pedidos">
+                    <thead>
+                        <tr>
+                            <th>#</th><th>Cliente</th><th>Producto</th><th>Tamaño</th><th>Cant.</th>
+                            <th>Llevar</th><th>Descuento</th><th>Total</th><th>Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    @foreach (var p in Model)
+                    {
+                        <tr>
+                            <td>@p.Id</td>
+                            <td>
+                                <strong>@p.NombreCliente</strong><br>
+                                <small class="text-muted">@p.Correo</small>
+                            </td>
+                            <td>@p.ProductoNombre</td>
+                            <td><span class="badge badge-tamano">@p.Tamano</span></td>
+                            <td>@p.Cantidad</td>
+                            <td>@(p.ParaLlevar ? "Sí" : "No")</td>
+                            <td>@Formato.Moneda(p.Descuento)</td>
+                            <td><strong>@Formato.Moneda(p.Total)</strong></td>
+                            <td>@p.Fecha.ToString("dd/MM/yyyy HH:mm")</td>
+                        </tr>
+                    }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>
