@@ -1,0 +1,22 @@
+@model List<TiernoAmor.Models.Producto>
+@{ ViewData["Title"] = "Menú"; }
+
+<h2 class="mb-4">Nuestro menú</h2>
+<div class="row g-4">
+@foreach (var p in Model)
+{
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <span class="badge bg-tierno mb-2">@p.Categoria</span>
+                <h5 class="card-title">@p.Nombre</h5>
+                <p class="card-text">@p.Descripcion</p>
+            </div>
+            <div class="card-footer d-flex justify-content-between align-items-center">
+                <strong>@p.PrecioBase.ToString("C0")</strong>
+                <a asp-controller="Pedidos" asp-action="Crear" class="btn btn-sm btn-tierno">Pedir</a>
+            </div>
+        </div>
+    </div>
+}
+</div>

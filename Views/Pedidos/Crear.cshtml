@@ -1,0 +1,68 @@
+@model TiernoAmor.Models.Pedido
+@{
+    ViewData["Title"] = "Nuevo pedido";
+    var productos = (List<TiernoAmor.Models.Producto>)ViewBag.Productos;
+}
+
+<h2>Haz tu pedido </h2>
+<form asp-action="Crear" method="post" class="row g-3">
+    <div class="col-md-6">
+        <label asp-for="NombreCliente" class="form-label"></label>
+        <input asp-for="NombreCliente" class="form-control" />
+        <span asp-validation-for="NombreCliente" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="Correo" class="form-label"></label>
+        <input asp-for="Correo" class="form-control" />
+        <span asp-validation-for="Correo" class="text-danger"></span>
+    </div>
+    <div class="col-md-6">
+        <label asp-for="ProductoId" class="form-label"></label>
+        <select asp-for="ProductoId" class="form-select" id="producto">
+            <option value="">-- Selecciona --</option>
+            @foreach (var p in productos)
+            {
+                <option value="@p.Id" data-precio="@p.PrecioBase.ToString(System.Globalization.CultureInfo.InvariantCulture)">
+                    @p.Nombre (@p.PrecioBase.ToString("C0"))
+                </option>
+            }
+        </select>
+        <span asp-validation-for="ProductoId" class="text-danger"></span>
+    </div>
+    <div class="col-md-3">
+        <label asp-for="Tamano" class="form-label"></label>
+        <select asp-for="Tamano" class="form-select" id="tamano">
+            <option>Pequeño</option>
+            <option>Mediano</option>
+            <option>Grande</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <label asp-for="Cantidad" class="form-label"></label>
+        <input asp-for="Cantidad" class="form-control" id="cantidad" />
+        <span asp-validation-for="Cantidad" class="text-danger"></span>
+    </div>
+    <div class="col-12">
+        <div class="form-check">
+            <input asp-for="ParaLlevar" class="form-check-input" />
+            <label asp-for="ParaLlevar" class="form-check-label"></label>
+        </div>
+    </div>
+    <div class="col-12">
+        <label asp-for="Notas" class="form-label"></label>
+        <textarea asp-for="Notas" class="form-control" rows="2"></textarea>
+    </div>
+
+    <div class="col-12">
+        <div class="alert alert-light border">
+            Total estimado: <strong id="totalVivo">$0</strong>
+            <small class="text-muted">(10 % de descuento desde 5 unidades)</small>
+        </div>
+        <button class="btn btn-tierno">Enviar pedido</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

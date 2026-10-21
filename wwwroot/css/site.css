@@ -29,3 +29,10 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+
+:root { --tierno: #8b5e3c; --tierno-claro: #f5e9dd; }
+body { background: #fffaf5; }
+.btn-tierno { background: var(--tierno); color: #fff; }
+.btn-tierno:hover { background: #6f4a2e; color: #fff; }
+.bg-tierno { background: var(--tierno); }
+.hero-tierno { background: var(--tierno-claro); color: #4a2f1b; }
