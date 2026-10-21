@@ -10,12 +10,12 @@ public class PedidosController : Controller
     // GET: /Pedidos
     public IActionResult Index() => View(_pedidos.OrderByDescending(p => p.Fecha).ToList());
 
-    // GET: /Pedidos/Crear -> muestra el formulario vacío
+    // GET: /Pedidos/Crear?productoId=3 -> formulario (con producto preseleccionado)
     [HttpGet]
-    public IActionResult Crear()
+    public IActionResult Crear(int? productoId)
     {
         ViewBag.Productos = MenuTiernoAmor.Productos;
-        return View(new Pedido());
+        return View(new Pedido { ProductoId = productoId ?? 0 });
     }
 
     // POST: /Pedidos/Crear -> valida y procesa
@@ -33,7 +33,6 @@ public class PedidosController : Controller
             return View(pedido);
         }
 
-        // Procesamiento en C#
         decimal factor = pedido.Tamano switch
         {
             "Pequeño" => 1m,
@@ -42,14 +41,14 @@ public class PedidosController : Controller
             _ => 1m
         };
         decimal subtotal = producto!.PrecioBase * factor * pedido.Cantidad;
-        pedido.Descuento = pedido.Cantidad >= 5 ? subtotal * 0.10m : 0m; // 10% desde 5 unidades
+        pedido.Descuento = pedido.Cantidad >= 5 ? subtotal * 0.10m : 0m;
         pedido.Total = subtotal - pedido.Descuento;
         pedido.ProductoNombre = producto.Nombre;
         pedido.Id = _pedidos.Count + 1;
         pedido.Fecha = DateTime.Now;
 
         _pedidos.Add(pedido);
-        TempData["Mensaje"] = $"¡Gracias {pedido.NombreCliente}! Tu pedido quedó en {pedido.Total:C0}.";
+        TempData["Mensaje"] = $"¡Gracias {pedido.NombreCliente}! Tu pedido de {pedido.Cantidad} x {producto.Nombre} quedó en {Formato.Moneda(pedido.Total)}.";
         return RedirectToAction(nameof(Index));
     }
 }
