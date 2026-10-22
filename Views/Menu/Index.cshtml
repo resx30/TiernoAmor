@@ -1,22 +1,48 @@
 @model List<TiernoAmor.Models.Producto>
 @{ ViewData["Title"] = "Menú"; }
 
-<h2 class="mb-4">Nuestro menú</h2>
-<div class="row g-4">
-@foreach (var p in Model)
-{
-    <div class="col-md-4">
-        <div class="card h-100 shadow-sm">
-            <div class="card-body">
-                <span class="badge bg-tierno mb-2">@p.Categoria</span>
-                <h5 class="card-title">@p.Nombre</h5>
-                <p class="card-text">@p.Descripcion</p>
-            </div>
-            <div class="card-footer d-flex justify-content-between align-items-center">
-                <strong>@p.PrecioBase.ToString("C0")</strong>
-                <a asp-controller="Pedidos" asp-action="Crear" class="btn btn-sm btn-tierno">Pedir</a>
-            </div>
+<div class="encabezado-pagina">
+    <div class="container">
+        <h1>Nuestro menú</h1>
+        <p class="mb-0">Elige lo que más se te antoje y pídelo en segundos.</p>
+    </div>
+</div>
+
+<div class="container seccion pt-4">
+
+    <div class="d-flex flex-wrap gap-3 justify-content-between align-items-center mb-4">
+        <ul class="nav nav-pills" id="filtros">
+            <li class="nav-item"><button class="nav-link filtro-btn active" data-categoria="todos">Todos</button></li>
+            <li class="nav-item"><button class="nav-link filtro-btn" data-categoria="Bebida">Bebidas</button></li>
+            <li class="nav-item"><button class="nav-link filtro-btn" data-categoria="Comida">Comidas</button></li>
+        </ul>
+        <div class="buscador">
+            <i class="bi bi-search"></i>
+            <input type="search" id="buscar" class="form-control" placeholder="Buscar producto...">
         </div>
     </div>
-}
+
+    <div class="row g-4" id="contenedorProductos">
+        @foreach (var p in Model)
+        {
+            <div class="col-sm-6 col-lg-4 item-menu" data-categoria="@p.Categoria" data-nombre="@p.Nombre.ToLower()">
+                <div class="producto-card">
+                    <div class="producto-icono"><i class="bi @(p.Categoria == "Bebida" ? "bi-cup-hot-fill" : "bi-cake2-fill")"></i></div>
+                    <div class="producto-body">
+                        <span class="producto-etiqueta">@p.Categoria</span>
+                        <h3 class="producto-nombre h5">@p.Nombre</h3>
+                        <p class="producto-desc">@p.Descripcion</p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="producto-precio">@Formato.Moneda(p.PrecioBase)</span>
+                            <a asp-controller="Pedidos" asp-action="Crear" asp-route-productoId="@p.Id" class="btn btn-tierno btn-sm">
+                                <i class="bi bi-plus-lg"></i> Pedir
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <p id="sinResultados" class="text-center text-muted mt-4 d-none">No encontramos productos con esa búsqueda.</p>
 </div>

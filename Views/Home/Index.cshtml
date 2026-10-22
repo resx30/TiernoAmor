@@ -1,8 +1,107 @@
-﻿@{ ViewData["Title"] = "Inicio"; }
+﻿@{
+    ViewData["Title"] = "Inicio";
+    var destacados = MenuTiernoAmor.Productos.Where(p => new[] { 2, 3, 6 }.Contains(p.Id)).ToList();
+}
 
-<div class="p-5 mb-4 rounded-3 hero-tierno text-center">
-    <h1 class="display-5 fw-bold">Tierno Amor</h1>
-    <p class="lead">Café, panadería y postres hechos con cariño.</p>
-    <a asp-controller="Menu" asp-action="Index" class="btn btn-light btn-lg me-2">Ver menú</a>
-    <a asp-controller="Pedidos" asp-action="Crear" class="btn btn-tierno btn-lg">Hacer pedido</a>
+<section class="hero-section">
+    <div class="container">
+        <div class="row align-items-center g-4">
+            <div class="col-lg-6">
+                <span class="hero-etiqueta"><i class="bi bi-stars me-1"></i> Café con cariño desde Envigado</span>
+                <h1 class="hero-title mt-3">Un lugar tranquilo para tu mejor café</h1>
+                <p class="hero-subtitle">
+                    Bienvenido a Tierno Amor, donde el amor por el café se combina con la calidez de nuestro servicio.
+                </p>
+                <div class="d-flex flex-wrap gap-2 mt-4">
+                    <a asp-controller="Pedidos" asp-action="Crear" class="btn btn-rosa btn-lg">
+                        <i class="bi bi-bag-heart me-1"></i> Hacer pedido
+                    </a>
+                    <a asp-controller="Menu" asp-action="Index" class="btn btn-outline-light btn-lg">Ver menú</a>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <img src="https://images.unsplash.com/photo-1495474472287-4d71bcdd2085?auto=format&fit=crop&w=900&q=80"
+                     alt="Taza de café caliente sobre una mesa"
+                     class="img-fluid rounded-4 hero-img">
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="container franja-datos">
+    <div class="row g-3">
+        <div class="col-6 col-md-3"><div class="dato-card"><i class="bi bi-cup-hot"></i><strong>@MenuTiernoAmor.Productos.Count</strong><span>productos</span></div></div>
+        <div class="col-6 col-md-3"><div class="dato-card"><i class="bi bi-clock"></i><strong>8 AM</strong><span>abrimos todos los días</span></div></div>
+        <div class="col-6 col-md-3"><div class="dato-card"><i class="bi bi-percent"></i><strong>10 %</strong><span>desde 5 unidades</span></div></div>
+        <div class="col-6 col-md-3"><div class="dato-card"><i class="bi bi-heart"></i><strong>100 %</strong><span>hecho con cariño</span></div></div>
+    </div>
+</section>
+
+<div class="container">
+
+    <section class="seccion">
+        <h2 class="section-title text-center">Sobre nosotros</h2>
+        <p class="text-center intro-texto mx-auto">
+            Tierno Amor nació con la idea de crear un lugar tranquilo donde las personas puedan disfrutar de un buen café,
+            comer algo delicioso y pasar un agradable momento.
+        </p>
+        <div class="row g-4 mt-1">
+            <div class="col-md-6">
+                <article class="info-card h-100 p-4">
+                    <h3 class="h5"><i class="bi bi-cup-hot-fill me-2 text-rosa"></i>¿Qué nos caracteriza?</h3>
+                    <ul class="mb-0">
+                        <li>Café preparado al momento.</li>
+                        <li>Ingredientes de buena calidad.</li>
+                        <li>Ambiente acogedor y relajante.</li>
+                        <li>Variedad de opciones en nuestro menú.</li>
+                    </ul>
+                </article>
+            </div>
+            <div class="col-md-6">
+                <article class="info-card h-100 p-4">
+                    <h3 class="h5"><i class="bi bi-heart-fill me-2 text-rosa"></i>Nuestro compromiso</h3>
+                    <ol class="mb-0">
+                        <li>Brindar un servicio amable y atento.</li>
+                        <li>Garantizar la frescura de nuestros productos.</li>
+                        <li>Crear un espacio donde todos se sientan bienvenidos.</li>
+                    </ol>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <section class="seccion">
+        <div class="d-flex justify-content-between align-items-end mb-3">
+            <h2 class="section-title mb-0">Favoritos de la casa</h2>
+            <a asp-controller="Menu" asp-action="Index" class="enlace-tierno">Ver todo el menú <i class="bi bi-arrow-right"></i></a>
+        </div>
+        <div class="row g-4">
+            @foreach (var p in destacados)
+            {
+                <div class="col-md-4">
+                    <div class="producto-card">
+                        <div class="producto-icono"><i class="bi @(p.Categoria == "Bebida" ? "bi-cup-hot-fill" : "bi-cake2-fill")"></i></div>
+                        <div class="producto-body">
+                            <span class="producto-etiqueta">@p.Categoria</span>
+                            <h3 class="producto-nombre h5">@p.Nombre</h3>
+                            <p class="producto-desc">@p.Descripcion</p>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="producto-precio">@Formato.Moneda(p.PrecioBase)</span>
+                                <a asp-controller="Pedidos" asp-action="Crear" asp-route-productoId="@p.Id" class="btn btn-tierno btn-sm">Pedir</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+
+    <section class="seccion">
+        <h2 class="section-title text-center">Pedir es muy fácil</h2>
+        <div class="row g-4 mt-1 text-center">
+            <div class="col-md-4"><div class="paso"><span class="paso-num">1</span><h3 class="h6">Elige tu antojo</h3><p class="small mb-0">Explora el menú y filtra por bebidas o comidas.</p></div></div>
+            <div class="col-md-4"><div class="paso"><span class="paso-num">2</span><h3 class="h6">Personaliza</h3><p class="small mb-0">Escoge tamaño, cantidad y si es para llevar.</p></div></div>
+            <div class="col-md-4"><div class="paso"><span class="paso-num">3</span><h3 class="h6">Confirma</h3><p class="small mb-0">Ve el total con descuento al instante y envía tu pedido.</p></div></div>
+        </div>
+    </section>
 </div>
